@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Password Strength Checker</title>
+  <style>
+    :root {
+      --bg-color: #c5d5df;
+      --text-color: #333;
+      --input-bg: #eaf6fb;
+      --button-bg: #3498db;
+      --button-hover: #2c80b4;
+    }
+
+    body.dark {
+      --bg-color: #1c1c1c;
+      --text-color: #f0f0f0;
+      --input-bg: #2c3e50;
+      --button-bg: #8e44ad;
+      --button-hover: #732d91;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      font-family: Arial, sans-serif;
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    img {
+      width: 300px;
+      height: 200px;
+      border-radius: 10px;
+      display: block;
+      margin: 30px auto 10px auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .middle {
+      font-size: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input[type="password"],
+    input[type="text"] {
+      width: 300px;
+      padding: 10px 40px 10px 10px;
+      font-size: 16px;
+      border: 2px solid #000000;
+      border-radius: 5px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      transition: border 0.3s ease;
+    }
+
+    input:focus {
+      border-color: var(--button-bg);
+      outline: none;
+    }
+
+    .eye-icon {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-color);
+    }
+
+    #result {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .progress-bar {
+      width: 300px;
+      height: 10px;
+      border-radius: 5px;
+      margin: 10px auto;
+      background-color: #ddd;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .toggle-theme {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: var(--button-bg);
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-theme" onclick="toggleTheme()">Toggle Theme</button>
+
+  <img src="Images/password.png" alt="Password Strength Image" />
+  <p class="middle">Enter your password to check its strength:</p>
+
+  <div class="container">
+    <div class="input-wrapper">
+      <input type="password" id="passwordInput" placeholder="Write here..." oninput="evaluatePassword()">
+      <span class="eye-icon" onclick="toggleVisibility()">👁️</span>
+    </div>
+  </div>
+
+  <div class="progress-bar">
+    <div id="progress" class="progress"></div>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+
+    function toggleVisibility() {
+      const input = document.getElementById("passwordInput");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    function evaluatePassword() {
+      const password = document.getElementById("passwordInput").value;
+      const result = document.getElementById("result");
+      const progress = document.getElementById("progress");
+
+      const lengthValid = password.length > 8 && password.length < 20;
+      const hasUpper = /[A-Z]/.test(password);
+      const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+
+      let strength = 0;
+      if (lengthValid) strength++;
+      if (hasUpper) strength++;
+      if (hasSymbol) strength++;
+      if (hasNumber) strength++;
+
+      let color = "";
+      switch (strength) {
+        case 1:
+          progress.style.width = "25%";
+          color = "red";
+          result.textContent = "Weak password";
+          break;
+        case 2:
+          progress.style.width = "50%";
+          color = "orange";
+          result.textContent = "Fair password";
+          break;
+        case 3:
+          progress.style.width = "75%";
+          color = "gold";
+          result.textContent = "Good password";
+          break;
+        case 4:
+          progress.style.width = "100%";
+          color = "green";
+          result.textContent = "Strong password ✅";
+          break;
+        default:
+          progress.style.width = "0";
+          result.textContent = "Too short";
+      }
+      progress.style.backgroundColor = color;
+      result.style.color = color;
+    }
+  </script>
+</body>
+</html>
